@@ -181,13 +181,10 @@ function sizeGrid(){
   const availH = wrap.clientHeight;
   if(availW <= 0 || availH <= 0) return;
 
-  // kunci rasio 52 kolom : 63 baris, pilih sisi yang paling membatasi
-  const cellFromWidth = availW / WEEKS_PER_YEAR;
-  const cellFromHeight = availH / YEARS;
-  const cell = Math.min(cellFromWidth, cellFromHeight);
-
-  gridEl.style.width = (cell * WEEKS_PER_YEAR) + 'px';
-  gridEl.style.height = (cell * YEARS) + 'px';
+  // isi penuh ruang yang tersedia — sel jadi sedikit persegi panjang,
+  // tapi tidak ada lagi ruang kosong di atas/bawah grid
+  gridEl.style.width = availW + 'px';
+  gridEl.style.height = availH + 'px';
 }
 
 function render(){
