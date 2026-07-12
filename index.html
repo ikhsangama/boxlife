@@ -101,11 +101,6 @@
   }
 
   .grid{
-    width:auto;
-    height:auto;
-    max-width:100%;
-    max-height:100%;
-    aspect-ratio: 52 / 63;
     display:grid;
     grid-template-columns: repeat(52, 1fr);
     grid-template-rows: repeat(63, 1fr);
@@ -179,6 +174,22 @@ function diffWeeks(a, b){
   return Math.floor((a - b) / (1000*60*60*24*7));
 }
 
+function sizeGrid(){
+  const wrap = document.querySelector('.grid-wrap');
+  const gridEl = document.getElementById('grid');
+  const availW = wrap.clientWidth;
+  const availH = wrap.clientHeight;
+  if(availW <= 0 || availH <= 0) return;
+
+  // kunci rasio 52 kolom : 63 baris, pilih sisi yang paling membatasi
+  const cellFromWidth = availW / WEEKS_PER_YEAR;
+  const cellFromHeight = availH / YEARS;
+  const cell = Math.min(cellFromWidth, cellFromHeight);
+
+  gridEl.style.width = (cell * WEEKS_PER_YEAR) + 'px';
+  gridEl.style.height = (cell * YEARS) + 'px';
+}
+
 function render(){
   const TODAY = new Date();
 
@@ -229,6 +240,8 @@ function render(){
   document.getElementById('weeksNum').textContent = weeksLived.toLocaleString('en-US');
   document.getElementById('weeksLeftNum').textContent = Math.max(TOTAL_WEEKS - weeksLived, 0).toLocaleString('en-US');
   document.getElementById('pctNum').textContent = (weeksLived/TOTAL_WEEKS*100).toFixed(1) + '%';
+
+  sizeGrid();
 }
 
 render();
@@ -236,6 +249,7 @@ render();
 // as a fallback in case the engine doesn't reload it on its own
 setInterval(render, 60*60*1000);
 window.addEventListener('resize', render);
+window.addEventListener('orientationchange', render);
 </script>
 
 </body>
