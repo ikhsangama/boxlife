@@ -34,6 +34,7 @@
     height:100svh;
     display:flex;
     flex-direction:column;
+    justify-content:center;
     padding:
       max(2.4dvh, env(safe-area-inset-top) + 1.6dvh)
       max(4vmin, env(safe-area-inset-right) + 2vmin)
@@ -92,12 +93,10 @@
   }
 
   .grid-wrap{
-    flex: 1 1 auto;
-    min-height:0;
+    flex: 0 0 auto;
     display:flex;
-    align-items:flex-start;
     justify-content:center;
-    padding: 1.6dvh 0 0.4dvh;
+    padding: 2.4dvh 0 0;
   }
 
   .grid{
@@ -178,15 +177,15 @@ function sizeGrid(){
   const wrap = document.querySelector('.grid-wrap');
   const gridEl = document.getElementById('grid');
   const availW = wrap.clientWidth;
-  const availH = wrap.clientHeight;
-  if(availW <= 0 || availH <= 0) return;
+  if(availW <= 0) return;
 
-  // sel persegi, mengunci rasio 52 kolom : 63 baris — dipilih sisi yang
-  // paling membatasi. Grid ditempel rata atas (lihat .grid-wrap) supaya
-  // sisa ruang (kalau ada) jatuh di bawah, bukan jadi gap di atas.
+  // sel persegi berbasis lebar layar (non-sirkular — grid-wrap tidak lagi
+  // di-stretch, jadi tingginya mengikuti isi, bukan sebaliknya).
+  // Pengaman: batasi maksimum ~62% tinggi layar supaya tidak overflow
+  // di rasio layar yang tidak biasa.
   const cellFromWidth = availW / WEEKS_PER_YEAR;
-  const cellFromHeight = availH / YEARS;
-  const cell = Math.min(cellFromWidth, cellFromHeight);
+  const maxCellFromHeight = (window.innerHeight * 0.62) / YEARS;
+  const cell = Math.min(cellFromWidth, maxCellFromHeight);
 
   gridEl.style.width = (cell * WEEKS_PER_YEAR) + 'px';
   gridEl.style.height = (cell * YEARS) + 'px';
